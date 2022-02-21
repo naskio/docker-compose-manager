@@ -1,5 +1,7 @@
 #!/bin/bash
-# Docker Compose Manager, based on PS3
+##########################################################
+########## Docker Compose Manager, based on PS3 ##########
+##########################################################
 
 
 ########## Parsing arguments ##########
