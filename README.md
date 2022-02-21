@@ -45,9 +45,24 @@ echo "TestCase 01: docker-compose-manager.sh -d $HOME/Desktop/tests"
 
 ```shell
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys-v2
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) ps3
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) dialog
+```
+
+Or locally:
+
+```
+./install.sh --debug
+bash <(cat install.sh) --debug
+bash <(cat install.sh) ps3 --debug
+```
+
+# Check
+
+```
+which dcmanager
 ```
 
 # Usage

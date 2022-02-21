@@ -9,7 +9,7 @@
 VERSION="$1"
 if [[ -z "$VERSION" || $1 == "--debug" ]]
 then
-  VERSION="arrow-keys"
+  VERSION="arrow-keys-v2"
 fi
 
 DEBUG="false"
@@ -53,11 +53,14 @@ case $VERSION in
   "arrow-keys")
     echo "Installing Docker Compose Manager - $VERSION ..."
     ;;
+  "arrow-keys-v2")
+    echo "Installing Docker Compose Manager - $VERSION ..."
+    ;;
   "ps3")
     echo "Installing Docker Compose Manager - $VERSION ..."
     ;;
   *)
-    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'ps3' or 'arrow-keys'."
+    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'ps3', 'arrow-keys' or 'arrow-keys-v2'."
     exit 1
     ;;
 esac
