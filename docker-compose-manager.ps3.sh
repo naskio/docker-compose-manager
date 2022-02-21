@@ -38,9 +38,34 @@ init_array
 ########## Getting stacks ##########
 
 
+########## Get stack status ##########
+get_stack_status() {
+  second_line=$(cd "$1"; docker-compose ps --services)
+  if [[ "$second_line" =~ ^[[:space:]] || -z "$second_line" || $second_line == "" ]]
+  then
+    running_services=""
+    stack_status="down"
+  else
+    stack_status="up"
+    running_services=$(echo "$second_line" | tr '\n\r' ' ')
+  fi
+}
+########## Get stack status ##########
+
+
 ########## Commands ##########
 run_docker_compose_operation () {
-  echo "---------------------------------------------"
+  clear
+  echo "----- Stack '$(basename $1)' -----"
+  stack_status=""
+  running_services=""
+  get_stack_status "$1"
+  echo "- status: $stack_status"
+  if [ "$stack_status" == "up" ]
+  then
+    echo "- running services: $running_services"
+  fi
+  echo "- located at: $1"
   PS3="Select the operation: "
   select operation in up down restart resync upgrade Quit; do
     case $operation in
@@ -59,8 +84,8 @@ run_docker_compose_operation () {
 
 ########## Main ##########
 echo "----- Welcome to Docker Compose Manager -----"
-echo "Current directory: $CURRENT_DIR"
-echo "Looking for docker-compose files in: $ROOT_DIR ..."
+echo "- Current directory: $CURRENT_DIR"
+echo "- Looking for docker-compose.ya?ml files in: $ROOT_DIR ..."
 echo "---------------------------------------------"
 PS3="Select the stack: "
 select stack in "${array[@]}" "Quit"; do
