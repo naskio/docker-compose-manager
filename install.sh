@@ -7,11 +7,21 @@
 
 ########## Parsing args ##########
 VERSION="$1"
-if [ -z "$VERSION" ]; then
-    VERSION="arrow-keys"
+if [[ -z "$VERSION" || $1 == "--debug" ]]
+then
+  VERSION="arrow-keys"
+fi
+
+DEBUG="false"
+if [[ $1 == "--debug" || $2 == "--debug" ]]
+then
+  DEBUG="true"
+else
+  DEBUG="false"
 fi
 ########## Parsing args ##########
-
+echo "Version: $VERSION"
+echo "Debug: $DEBUG"
 
 ########## Getting the platform ##########
 PLATFORM=""
@@ -57,11 +67,17 @@ esac
 ########## Installing the script ##########
 echo "creating docker-compose-manager directory ..."
 mkdir -p /usr/local/lib/docker-compose-manager/
-echo "downloading files ..."
-curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/docker-compose-manager.$VERSION.sh > /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
+if [ $DEBUG == "true" ]
+then
+  echo "copying files ..."
+  cp ./docker-compose-manager.$VERSION.sh /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
+else
+  echo "downloading files ..."
+  curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/docker-compose-manager.$VERSION.sh > /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
+fi
 echo "adding executable permissions ..."
 chmod +x /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
 echo "creating symbolic link ..."
-ln -s /usr/local/lib/docker-compose-manager/docker-compose-manager.sh /usr/local/bin/dcmanager
+ln -s -f /usr/local/lib/docker-compose-manager/docker-compose-manager.sh /usr/local/bin/dcmanager
 echo "Installation done."
 ########## Installing the script ##########
