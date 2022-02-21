@@ -56,12 +56,12 @@ esac
 
 ########## Installing the script ##########
 echo "creating docker-compose-manager directory ..."
-mkdir -r $HOME/lib/docker-compose-manager/
+mkdir -p /usr/local/lib/docker-compose-manager/
 echo "downloading files ..."
-curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/docker-compose-manager.$VERSION.sh > $HOME/lib/docker-compose-manager/docker-compose-manager.sh
+curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/docker-compose-manager.$VERSION.sh > /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
 echo "adding executable permissions ..."
-chmod +x $HOME/lib/docker-compose-manager/docker-compose-manager.sh
+chmod +x /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
 echo "creating symbolic link ..."
-ln -s $HOME/lib/docker-compose-manager/docker-compose-manager.sh $HOME/bin/dcmanager
+ln -s /usr/local/lib/docker-compose-manager/docker-compose-manager.sh /usr/local/bin/dcmanager
 echo "Installation done."
 ########## Installing the script ##########

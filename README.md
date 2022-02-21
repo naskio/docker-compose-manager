@@ -41,10 +41,17 @@ echo "Example 3: docker-compose-manager.sh"
 echo "TestCase 01: docker-compose-manager.sh -d $HOME/Desktop/tests"
 ```
 
-# Install
+# Installation
 
+```shell
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) ps3
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) dialog
 ```
-bash <(curl -s http://mywebsite.com/myscript.txt)
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
+# Usage
+
+```shell
+dcmanager
 ```
