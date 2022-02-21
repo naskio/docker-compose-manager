@@ -320,3 +320,15 @@ dist
 .yarn/install-state.gz
 .pnp.*
 ##### Node.JS #####
+
+
+##### tmps #####
+tmp/
+*.tmp
+tmp.*
+*.tmp.*
+##### tmps #####
+
+
+
+
