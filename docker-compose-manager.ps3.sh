@@ -1,6 +1,7 @@
 #!/bin/bash
 ##########################################################
 ########## Docker Compose Manager, based on PS3 ##########
+########## Tested on: macOS, Linux                  ######
 ##########################################################
 
 
@@ -9,8 +10,7 @@ ROOT_DIR="$1"
 
 # set default value for root directory
 if [ -z "$ROOT_DIR" ]; then
-  # ROOT_DIR="$HOME"
-  ROOT_DIR=$(PWD)
+  ROOT_DIR=$(pwd)
 fi
 ########## Parsing arguments ##########
 
@@ -21,14 +21,36 @@ ROOT_DIR=$(realpath $ROOT_DIR)
 ########## Setup Vars ##########
 
 
+########## Getting the platform ##########
+PLATFORM=""
+UNAME_OUT="$(uname -s)"
+case "$UNAME_OUT" in
+    Linux*)     PLATFORM=Linux;;
+    Darwin*)    PLATFORM=Mac;;
+    CYGWIN*)    PLATFORM=Cygwin;;
+    MINGW*)     PLATFORM=MinGw;;
+    *)          PLATFORM="UNKNOWN:${UNAME_OUT}"
+esac
+########## Getting the platform ##########
+
+
 ########## Getting stacks ##########
 array=()
 init_array() {
   tmp_array=()
   # get docker-compose.yml files
-  while IFS=  read -r -d $'\n'; do
+  if [ "$PLATFORM" = "Mac" ]
+  then
+    while IFS=  read -r -d $'\n'; do
     tmp_array+=("$REPLY")
-  done < <(find -E $ROOT_DIR -type f -regex .*/docker-compose.ya?ml | sort -u)
+    done < <(find -E $ROOT_DIR -type f -regex .*/docker-compose.ya?ml | sort -u)
+  elif [ "$PLATFORM" = "Linux" ]
+  then
+    while IFS=  read -r -d $'\n'; do
+    tmp_array+=("$REPLY")
+    done < <(find $ROOT_DIR -type f -regex .*/docker-compose.ya?ml | sort -u)
+  fi
+
   # map file to parent dir
   for i in "${tmp_array[@]}"
   do
@@ -70,14 +92,18 @@ run_docker_compose_operation () {
   echo "- located at: $1"
   PS3="Select the operation: "
   select operation in up down restart resync upgrade Quit; do
+    if [ "$operation" != "Quit" ]
+    then
+      echo "- running command '$operation' at '$1'..."
+    fi
     case $operation in
         "resync") cd $1; docker-compose down && git pull && docker-compose up -d ;cd $CURRENT_DIR;break;;
         "upgrade") cd $1; docker-compose down && docker-compose pull && docker-compose up -d ;cd $CURRENT_DIR;break;;
         "restart") cd $1 && docker-compose down && docker-compose up -d ;cd $CURRENT_DIR;break;;
         "up") cd $1; docker-compose up -d ;cd $CURRENT_DIR;break;;
         "down") cd $1; docker-compose down ;cd $CURRENT_DIR;break;;
-        "Quit") break;;
-        *) echo "Invalid option $REPLY.";break;;
+        "Quit") clear;break;;
+        *) echo "Invalid options. operation '$REPLY' at folder '$1'.";break;;
     esac
   done
 }
@@ -85,6 +111,7 @@ run_docker_compose_operation () {
 
 
 ########## Main ##########
+clear
 echo "----- Welcome to Docker Compose Manager -----"
 echo "- Current directory: $CURRENT_DIR"
 echo "- Looking for docker-compose.ya?ml files in: $ROOT_DIR ..."
@@ -92,7 +119,7 @@ echo "---------------------------------------------"
 PS3="Select the stack: "
 select stack in "${array[@]}" "Quit"; do
   case $stack in
-      "Quit") break;;
+      "Quit") clear;break;;
       *) run_docker_compose_operation $stack;break;;
   esac
 done

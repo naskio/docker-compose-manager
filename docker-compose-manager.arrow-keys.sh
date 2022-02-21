@@ -1,6 +1,7 @@
 #!/bin/bash
 ##########################################################
 ########## Docker Compose Manager, using arrow keys ######
+########## Tested on: Linux                         ######
 ##########################################################
 
 
@@ -9,7 +10,6 @@ ROOT_DIR="$1"
 
 # set default value for root directory
 if [ -z "$ROOT_DIR" ]; then
-  # ROOT_DIR="$HOME"
   ROOT_DIR=$(pwd)
 fi
 ########## Parsing arguments ##########
@@ -208,7 +208,7 @@ select_operation(){
   if [ "$SELECTED_OPERATION" = "Quit" ]  # Quit
   then
     clear
-    exit 0
+    exit
   fi
 }
 select_operation $SELECTED_FOLDER
@@ -242,6 +242,7 @@ run_docker_compose_operation () {
 ########## Main ##########
 case $SELECTED_FOLDER in
   "Quit")
+    clear
     exit
     ;;
   *)
