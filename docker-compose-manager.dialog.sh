@@ -100,6 +100,12 @@ SELECTED_FOLDER=""
 select_folder(){
   # get stack
   TMP_FILE=$(mktemp)
+  # check if array empty
+  if [ -z "$array" ]
+  then
+    echo "No stacks detected"
+    exit 0
+  fi
   dialog --ok-label "NEXT" --cancel-label "QUIT" --menu "Select the stack:" 0 0 0 $array_string 2>$TMP_FILE
   stack_index=$(cat $TMP_FILE)
   rm $TMP_FILE

@@ -130,6 +130,11 @@ SELECTED_FOLDERS=()
 select_folder(){
   # get stack
   TMP_FILE=$(mktemp)
+  if [ -z "$array" ]
+  then
+    echo "No stacks detected"
+    exit 0
+  fi
   dialog --ok-label "RUN" --cancel-label "QUIT" --checklist "Select stacks (selected: '$SELECTED_OPERATION'):" 0 0 0 $array_string 2>$TMP_FILE
   stack_indexes=$(cat $TMP_FILE)
   rm $TMP_FILE
