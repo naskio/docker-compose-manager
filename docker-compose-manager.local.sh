@@ -132,6 +132,7 @@ select_folder(){
   TMP_FILE=$(mktemp)
   if [ -z "$array" ]
   then
+    clear
     echo "No stacks detected"
     exit 0
   fi

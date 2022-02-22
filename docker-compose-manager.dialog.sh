@@ -103,6 +103,7 @@ select_folder(){
   # check if array empty
   if [ -z "$array" ]
   then
+    clear
     echo "No stacks detected"
     exit 0
   fi
