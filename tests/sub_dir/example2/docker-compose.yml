@@ -5,6 +5,8 @@ services:
     image: hello-world:latest
     restart: unless-stopped
     container_name: example2_1
+    environment:
+      - FOO=${FOO}
 
   example2_2:
     image: hello-world:latest

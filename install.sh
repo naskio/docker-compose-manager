@@ -9,7 +9,7 @@
 VERSION="$1"
 if [[ -z "$VERSION" || $1 == "--debug" ]]
 then
-  VERSION="arrow-keys-v2"
+  VERSION="multi" # default version
 fi
 
 DEBUG="false"
@@ -38,29 +38,34 @@ esac
 
 ########## Installing dependencies ##########
 case $VERSION in
-  "dialog")
+  "dialog" | "multi")
     echo "Installing Docker Compose Manager - $VERSION ..."
     echo "Installing dependencies ..."
-    if [ $PLATFORM=="Linux" ]; then
-      sudo apt-get update -y
-      sudo apt-get install -y dialog
+    # check if dialog is installed using which
+    dialog_exists=$(which dialog)
+    if [ -z "$dialog_exists" ]
+    then
+      if [ $PLATFORM == "Linux" ]
+      then
+        echo "Installing dialog on Linux ..."
+        apt-get update -y
+        apt-get install -y dialog
+      fi
+      if [ $PLATFORM == "Mac" ]
+      then
+        echo "Installing dialog on MacOS ..."
+        brew update
+        brew install dialog
+      fi
+    else
+      echo "dialog is already installed."
     fi
-    if [ $PLATFORM=="Mac" ]; then
-      brew update
-      brew install dialog
-    fi
     ;;
-  "arrow-keys")
-    echo "Installing Docker Compose Manager - $VERSION ..."
-    ;;
-  "arrow-keys-v2")
-    echo "Installing Docker Compose Manager - $VERSION ..."
-    ;;
-  "ps3")
+  "arrow-keys" | "arrow-keys-v2" | "ps3")
     echo "Installing Docker Compose Manager - $VERSION ..."
     ;;
   *)
-    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'ps3', 'arrow-keys' or 'arrow-keys-v2'."
+    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'multi', 'ps3', 'arrow-keys' or 'arrow-keys-v2'."
     exit 1
     ;;
 esac
@@ -81,6 +86,6 @@ fi
 echo "adding executable permissions ..."
 chmod +x /usr/local/lib/docker-compose-manager/docker-compose-manager.sh
 echo "creating symbolic link ..."
-ln -s -f /usr/local/lib/docker-compose-manager/docker-compose-manager.sh /usr/local/bin/dcmanager
+ln -s -f /usr/local/lib/docker-compose-manager/docker-compose-manager.sh /usr/local/bin/dcm
 echo "Installation done."
 ########## Installing the script ##########

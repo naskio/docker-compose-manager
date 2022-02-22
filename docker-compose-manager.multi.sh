@@ -1,6 +1,7 @@
 #!/bin/bash
 ##########################################################
 ########## Docker Compose Manager, dialog        #########
+########## run the same command on multi stacks  #########
 ########## Tested on: macOS, Linux               #########
 ##########################################################
 
@@ -62,11 +63,32 @@ init_array
 ########## Getting stacks ##########
 
 
+########## Get array stack status ##########
+array_stack_status=()
+array_running_services=()
+get_array_stack_status() {
+  for st in "${array[@]}" ; do
+    second_line=$(cd "$st"; docker-compose ps --services) # add 2>/dev/null to disable WARNING
+    if [[ "$second_line" =~ ^[[:space:]] || -z "$second_line" || $second_line == "" ]]
+    then
+      running_services=""
+      stack_status="down"
+    else
+      stack_status="up"
+      running_services=$(echo "$second_line" | tr '\n\r' ' ')
+    fi
+    array_stack_status+=("$stack_status")
+    array_running_services+=("$running_services")
+  done
+}
+get_array_stack_status
+########## Get array stack status ##########
+
+
 ########## Getting stacks as string ##########
 array_string=""
 for i in "${!array[@]}"; do
-#    array_string+="$((i + 1)) ${array[$i]} off " # multiple selection
-    array_string+="$((i + 1)) ${array[$i]} " # single selection
+    array_string+="$((i + 1)) (${array_stack_status[$i]})->${array[$i]} off " # multiple selection
 done
 ########## Getting stacks as string ##########
 
@@ -80,60 +102,11 @@ done
 ########## Operations as string ##########
 
 
-########## Get stack status ##########
-get_stack_status() {
-  second_line=$(cd "$1"; docker-compose ps --services)
-  if [[ "$second_line" =~ ^[[:space:]] || -z "$second_line" || $second_line == "" ]]
-  then
-    running_services=""
-    stack_status="down"
-  else
-    stack_status="up"
-    running_services=$(echo "$second_line" | tr '\n\r' ' ')
-  fi
-}
-########## Get stack status ##########
-
-
-########## Get stack ##########
-SELECTED_FOLDER=""
-select_folder(){
-  # get stack
-  TMP_FILE=$(mktemp)
-  dialog --ok-label "NEXT" --cancel-label "QUIT" --menu "Select the stack:" 0 0 0 $array_string 2>$TMP_FILE
-  stack_index=$(cat $TMP_FILE)
-  rm $TMP_FILE
-  #  clear
-  if [ $stack_index ]
-  then
-      SELECTED_FOLDER=${array[$((stack_index - 1))]}
-  else # No stack selected
-      clear
-      exit 0
-  fi
-}
-select_folder
-########## Get stack ##########
-
-
 ########## Get operation ##########
 SELECTED_OPERATION=""
 select_operation(){
-  # get 2nd header
-  MENU_HEADER2="Select the operation: "
-  MENU_HEADER2="$MENU_HEADER2 Stack '$(basename $1)'"
-  stack_status=""
-  running_services=""
-  get_stack_status "$1"
-  MENU_HEADER2="$MENU_HEADER2 | Status '$stack_status'"
-  if [ "$stack_status" == "up" ]
-  then
-    MENU_HEADER2="$MENU_HEADER2 | running services: $running_services"
-  fi
-  MENU_HEADER2="$MENU_HEADER2 | located at '$1'"
-
   TMP_FILE=$(mktemp)
-  dialog --ok-label "RUN" --cancel-label "QUIT" --menu "$MENU_HEADER2" 0 0 0 $operations_string 2>$TMP_FILE
+  dialog --ok-label "NEXT" --cancel-label "QUIT" --menu "Select the operation: " 0 0 0 $operations_string 2>$TMP_FILE
   operation_index=$(cat $TMP_FILE)
   rm $TMP_FILE
   #  clear
@@ -145,43 +118,83 @@ select_operation(){
       exit 0
   fi
 }
-select_operation $SELECTED_FOLDER
+select_operation
 ########## Get operation ##########
+
+
+########## Get stacks ##########
+SELECTED_FOLDER_INDEXES=()
+SELECTED_FOLDERS=()
+select_folder(){
+  # get stack
+  TMP_FILE=$(mktemp)
+  dialog --ok-label "RUN" --cancel-label "QUIT" --checklist "Select stacks (selected: '$SELECTED_OPERATION'):" 0 0 0 $array_string 2>$TMP_FILE
+  stack_indexes=$(cat $TMP_FILE)
+  rm $TMP_FILE
+  # clear
+  if [[ -z $stack_indexes ]]
+  then
+    clear
+    exit 0
+  else
+    stack_indexes=( "$stack_indexes" ) # convert string to array of indexes
+    for i in $stack_indexes; do
+      stack=${array[$((i - 1))]}
+      SELECTED_FOLDERS+=("$stack")
+      SELECTED_FOLDER_INDEXES+=($((i - 1)))
+    done
+  fi
+}
+select_folder
+########## Get stacks ##########
 
 
 ########## Commands ##########
 run_docker_compose_operation () {
-  clear
   echo "----- Stack '$(basename $1)' -----"
-  echo "- status: $stack_status"
-  if [ "$stack_status" == "up" ]
+  echo "- status: $3"
+  if [ "$3" == "up" ]
   then
-    echo "- running services: $running_services"
+    echo "- running services: $4"
   fi
   echo "- located at: $1"
   echo "- running command '$2' at '$1'..."
   case $2 in
-    "resync") cd $1; docker-compose down && git pull && docker-compose up -d ;cd $CURRENT_DIR;exit;;
-    "upgrade") cd $1; docker-compose down && docker-compose pull && docker-compose up -d ;cd $CURRENT_DIR;exit;;
-    "restart") cd $1 && docker-compose down && docker-compose up -d ;cd $CURRENT_DIR;exit;;
-    "up") cd $1; docker-compose up -d ;cd $CURRENT_DIR;exit;;
-    "down") cd $1; docker-compose down ;cd $CURRENT_DIR;exit;;
-    "Quit") exit;;
-    *) echo "Invalid options operation '$2' at folder '$1'.";exit;;
+    "resync")
+      cd $1; docker-compose down && git pull && docker-compose up -d ;cd $CURRENT_DIR;
+      ;;
+    "upgrade")
+      cd $1; docker-compose down && docker-compose pull && docker-compose up -d ;cd $CURRENT_DIR;
+      ;;
+    "restart")
+      cd $1 && docker-compose down && docker-compose up -d ;cd $CURRENT_DIR;
+      ;;
+    "up")
+      cd $1; docker-compose up -d ;cd $CURRENT_DIR;
+      ;;
+    "down")
+      cd $1; docker-compose down ;cd $CURRENT_DIR;
+      ;;
+    "Quit")
+      exit;
+      ;;
+    *)
+      echo "ERROR: Invalid options operation '$2' at folder '$1'.";
+      ;;
   esac
 }
 ########## Commands ##########
 
 
 ########## Main ##########
-case $SELECTED_FOLDER in
-  "Quit")
-    clear
-    exit
-    ;;
-  *)
-    run_docker_compose_operation $SELECTED_FOLDER $SELECTED_OPERATION
-    exit
-    ;;
-esac
+if (( ${#SELECTED_FOLDERS[@]} != 0 )); then
+  clear
+  for i in ${SELECTED_FOLDER_INDEXES[*]} ; do
+    run_docker_compose_operation "${array[$i]}" "$SELECTED_OPERATION" "${array_stack_status[$i]}" "${array_running_services[$i]}"
+  done
+  exit
+else # No stacks selected.
+  clear
+  exit 0
+fi
 ########## Main ##########
