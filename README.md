@@ -67,8 +67,7 @@ Use `arrow keys` and `space` to navigate and select from the list, and `enter` t
 Run the following command to uninstall docker-compose-manager:
 
 ```shell
-rm /usr/local/bin/dcm
-rm -r /usr/local/lib/docker-compose-manager/
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/uninstall.sh)
 ```
 
 # Contributing

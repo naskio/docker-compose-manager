@@ -21,6 +21,13 @@ bash <(cat install.sh) --debug
 bash <(cat install.sh) ps3 --debug
 ```
 
+## Uninstallation
+
+```shell
+rm /usr/local/bin/dcm
+rm -r /usr/local/lib/docker-compose-manager/
+```
+
 ## Testing
 
 ```shell
