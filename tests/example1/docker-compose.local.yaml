@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  example1-local:
+    image: hello-world:latest
+    restart: unless-stopped
+    container_name: example1-local

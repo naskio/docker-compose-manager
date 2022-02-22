@@ -38,7 +38,7 @@ esac
 
 ########## Installing dependencies ##########
 case $VERSION in
-  "dialog" | "multi")
+  "dialog" | "multi" | "local")
     echo "Installing Docker Compose Manager - $VERSION ..."
     echo "Installing dependencies ..."
     # check if dialog is installed using which
@@ -65,7 +65,7 @@ case $VERSION in
     echo "Installing Docker Compose Manager - $VERSION ..."
     ;;
   *)
-    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'multi', 'ps3', 'arrow-keys' or 'arrow-keys-v2'."
+    echo "- Invalid option '$VERSION'. Should be: 'dialog', 'multi', 'local', 'ps3', 'arrow-keys' or 'arrow-keys-v2'."
     exit 1
     ;;
 esac

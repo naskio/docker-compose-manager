@@ -18,19 +18,21 @@ Alternatively, you can specify a different version:
 
 ```shell
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) multi
-bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys-v2
-bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys
-bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) ps3
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) local
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) dialog
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys-v2
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) ps3
 ```
 
 Available versions:
 
+- ```multi```: run one-command on multiple docker-compose files (stacks), use dialog for selection. (default version)
+- ```local```: same as ```multi```, but use local files `docker-compose.local.ya?ml` instead of default files.
+- ```dialog```: Run one command on one stack, use dialog for selection.
 - ```arrow-keys```: Run one command on one stack, use arrow keys for navigation.
 - ```arrow-keys-v2```: Run one command on one stack, use arrow keys for navigation - version 2.
 - ```ps3```: Run one command on one stack, use ps3 for selection.
-- ```dialog```: Run one command on one stack, use dialog for selection.
-- ```multi```: run one-command on multiple docker-compose files (stacks), use dialog for selection. (default version)
 
 ## Check
 
