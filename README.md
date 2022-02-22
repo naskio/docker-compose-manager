@@ -2,71 +2,73 @@
 
 manage multiple docker-compose files (stacks) in one place using an intuitive command line interface.
 
-# Usage
+![screenshot](assets/screenshot2.png)
 
-## CLI
+# Getting Started
 
-- Add permission to the script `chmod +x ./docker-compose-cli.sh`.
+## Install
 
-```shell
-chmod +x ./docker-compose-cli.sh
-
-# get all folders which has docker-compose.y(a)ml file in it
-find /home/ -regex '.*/docker-compose.ya?ml' -printf '%h\n' | sort -u
-```
-
-## Test
-
-```
-./docker-compose-manager.ps3.sh
-./docker-compose-manager.ps3.sh /home/
-./docker-compose-manager.ps3.sh /
-./docker-compose-manager.ps3.sh tests
-./docker-compose-manager.ps3.sh <optional path to directory where we look for docker-compose files>
-```
-
-# Dependencies
-
-- nameref (use bash version > 4.3) => Not anymore
-- ```brew install gnu-getopt``` => may be optional
-
-# Help
-
-```
-"Docker Compose Manager Help"
-echo "Usage: docker-compose-manager.sh --directory <full path of directory where we look for docker-compose files>"
-echo "Example 1: docker-compose-manager.sh --directory /home/"
-echo "Example 2: docker-compose-manager.sh -d /"
-echo "Example 3: docker-compose-manager.sh"
-echo "TestCase 01: docker-compose-manager.sh -d $HOME/Desktop/tests"
-```
-
-# Installation
+Run the following command to install docker-compose-manager:
 
 ```shell
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh)
+```
+
+Alternatively, you can specify a different version:
+
+```shell
+bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) multi
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys-v2
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) arrow-keys
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) ps3
 bash <(curl -sSL https://raw.githubusercontent.com/naskio/docker-compose-manager/main/install.sh) dialog
 ```
 
-Or locally:
+Available versions:
 
-```
-./install.sh --debug
-bash <(cat install.sh) --debug
-bash <(cat install.sh) ps3 --debug
-```
+- ```arrow-keys```: Run one command on one stack, use arrow keys for navigation.
+- ```arrow-keys-v2```: Run one command on one stack, use arrow keys for navigation - version 2.
+- ```ps3```: Run one command on one stack, use ps3 for selection.
+- ```dialog```: Run one command on one stack, use dialog for selection.
+- ```multi```: run one-command on multiple docker-compose files (stacks), use dialog for selection. (default version)
 
-# Check
+## Check
 
-```
-which dcmanager
-```
-
-# Usage
+Check if docker-compose-manager has been installed correctly:
 
 ```shell
-dcmanager
+which dcm
 ```
+
+## Usage
+
+Inside the folder where you want to manage docker-compose files, run the following commands:
+
+```shell
+dcm
+```
+
+### Available commands
+
+- ```up```: start all services in the stack.
+- ```down```: stop all services in the stack.
+- ```restart```: restart all services in the stack (`up` then `down`).
+- ```resync```: fetch the latest code from GitHub then restart all services in the stack (`down`, `git pull` then `up`).
+- ```upgrade```: upgrade images of all services in the stack (`down`, `pull` then `up`).
+
+![screenshot](assets/screenshot1.png)
+
+### Dialog Usage
+
+Use `arrow keys` and `space` to navigate and select from the list, and `enter` to validate.
+
+# Contributing
+
+[Pull requests](https://github.com/naskio/docker-compose-manager/pulls) are welcome! For any bug reports, please create
+an [issue](https://github.com/naskio/docker-compose-manager/issues).
+
+Start by reading the [contributor guideline](CONTRIBUTING.md).
+
+# License
+
+[License](LICENSE)
